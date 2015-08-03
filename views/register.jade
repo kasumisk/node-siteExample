@@ -1,0 +1,22 @@
+extends common/layout
+block content
+    .container(style='margin-top:100px')
+        .row
+            .col-xs-12
+                form(action="api/register",method="post")
+                    .input-group.input-group-lg
+                        label.input-group-addon 用户名：
+                        input.form-control(type='text', placeholder='Username', name='Username')
+                    .input-group
+                        label.input-group-addon 邮箱：
+                        input.form-control(type='text', placeholder='Username', name='Email')
+                    .input-group.input-group-sm
+                        label.input-group-addon 密码：
+                        input.form-control(type='password', placeholder='Username', name='Password')
+                    .input-group.input-group-sm
+                        label.input-group-addon 重输密码：
+                        input.form-control(type='password', placeholder='Username',name='RePassword')
+                    .input-group.input-group-sm
+                        button.btn-primary.btn(type="submit") 提交
+
+

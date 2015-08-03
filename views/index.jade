@@ -1,0 +1,22 @@
+extends common/layout
+block header
+  include common/header
+block content
+  .container
+    .row
+      - if(movies)
+        each item in movies
+          .col-md-2
+            .thumbnail
+              a(href="/movie/#{item._id}")
+                img(src="#{item.poster}",alt="#{item.title}")
+            .caption
+              h3 #{item.title}
+              p: a.btn.btn-primary(href="/movie/#{item._id}",role="button") 观看预告片
+block footer
+  include common/footer
+block script
+  script(src='vendor/jquery/dist/jquery.min.js',type='text/javascript')
+  script(src='vendor/bootstrap/dist/js/bootstrap.min.js',type='text/javascript')
+
+

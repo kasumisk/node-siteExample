@@ -1,0 +1,16 @@
+<div class="col-md-12">
+    <div class="panel panel-default room">
+        <div class="panel-heading room-header">technode
+            <div class="panel-body room-content">
+                <div auto-scroll-to-bottom="auto-scroll-to-bottom" class="list-group messages">
+                    <div ng-repeat="message in messages" class="list-group-item message">某某：{{message}}</div>
+                </div>
+                <form ng-controller="MessageCreatorCtrl" class="message-creator">
+                    <div class="form-group">
+                        <textarea required="required" ng-model="newMessage" ctrl-enter-break-line="createMessage()" placeholder="Ctrl+Enter to quick send" class="form-control message-input"></textarea>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+extends common/layout
+block content
+    .container(style='margin-top:100px')
+        .row
+            .col-xs-12
+               form(action="api/login",method="POST")
+                   .input-group.input-group-lg
+                       label.input-group-addon 用户名：
+                       input.form-control(type='text', placeholder='Username', name='Username')
+                   .input-group.input-group-lg
+                       label.input-group-addon 密码：
+                       input.form-control(type='password', placeholder='Password', name='Password')
+                   .input-group.input-group-lg
+                       button.btn-primary.btn(type="submit") 提交
+
+
