@@ -1,22 +1,16 @@
 var express = require('express');
 var path = require('path');
 //var favicon = require('serve-favicon');
-var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var mongoose = require('mongoose');
-//var mongoStore = require('connect-mongo')(express);
-var dbUrl = "mongodb://127.0.0.1:27017/test";
+var config = require('./config');
 
-var routes = require('./routes/index');
-var login = require('./routes/user/login');
-var register = require('./routes/user/register');
-var moviedetail = require('./routes/movie-detail');
-var movies = require('./routes/movies');
-var comment = require('./routes/comment');
-var adminMovielist = require('./routes/admin/movieList');
-var upload = require('./routes/upload');
+var logger = require('./common/logger')
+var mongoStore = require('connect-mongo')(session);
+var webRouter = require('./routes/web-router');
+var adminRouter = require('./routes/admin/admin-router');
 
 
 var app = express();
@@ -27,38 +21,40 @@ app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 //session
 app.use(session({
     secret:'technode',
     resave:true,
-/*    store:new mongoStore({
-        url:dbUrl,
+    store:new mongoStore({
+        url:config.db,
         collection:"sessions"
-    }),*/
+    }),
     saveUninitialized:false,
     cookie:{
         maxAge:60*1000
     }
-}))
+}));
+
+app.use(function(req,res,next){
+    var _user = req.session.user;
+    app.locals.user = _user;
+    next();
+
+});
+
 //connect mongo
-mongoose.connect(dbUrl);
-
-app.use('/', routes);
-app.use('/', moviedetail);
-app.use('/', movies);
-app.use('/', register);
-app.use('/', login);
-app.use('/', comment);
-app.use('/', adminMovielist);
-app.use('/', upload);
+mongoose.connect(config.db);
 
 
+// routes
+app.use('/admin', adminRouter);
+app.use('/', webRouter);
 
 
 // catch 404 and forward to error handler
@@ -68,7 +64,6 @@ app.use(function(req, res, next) {
     next(err);
 });
 
-// error handlers
 
 // development error handler
 // will print stacktrace
@@ -92,5 +87,23 @@ app.use(function(err, req, res, next) {
     });
 });
 
+/*
+// error handler
+if (config.debug) {
+    app.use(errorhandler());
+} else {
+    app.use(function (err, req, res, next) {
+        console.error('server 500 error:', err);
+        return res.status(500).send('500 status');
+    });
+}
+
+app.listen(config.port, function () {
+    logger.log('NodeClub listening on port', config.port);
+    logger.log('God bless love....');
+    logger.log('You can debug your app with http://' + config.hostname + ':' + config.port);
+    logger.log('');
+});
+*/
 
 module.exports = app;
