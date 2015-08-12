@@ -1,5 +1,6 @@
 var express = require("express");
 var sign = require("../../controllers/admin/sign");
+var admin = require("../../controllers/admin/admin");
 var config = require("../../config");
 
 var router = express.Router();
@@ -32,6 +33,8 @@ router.post('/user/set_star', auth.adminRequired, user.toggleStar); // °ÑÄ³ÓÃ»§É
 router.post('/user/cancel_star', auth.adminRequired, user.toggleStar);  // È¡ÏûÄ³ÓÃ»§µÄ´ïÈËÉí·İ
 router.post('/user/:name/block', auth.adminRequired, user.block);  // ½ûÑÔÄ³ÓÃ»§
 router.post('/user/:name/delete_all', auth.adminRequired, user.deleteAll);  // É¾³ıÄ³ÓÃ»§ËùÓĞ·¢ÑÔ*/
+
+router.post('/upload',admin.upload);
 
 
 module.exports = router;

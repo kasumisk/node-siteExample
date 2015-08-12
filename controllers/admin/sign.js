@@ -34,7 +34,6 @@ exports.signup = function (req, res, next) {
         ep.emit('prop_err', '用户名至少需要5个字符。');
         return;
     }
-    console.log(ep)
     if (!tools.validateId(loginname)) {
         return ep.emit('prop_err', '用户名不合法。');
     }
@@ -61,7 +60,6 @@ exports.signup = function (req, res, next) {
         tools.bhash(pass, ep.done(function (passhash) {
             // create gravatar
             var avatarUrl = User.makeGravatar(email);
-            console.log(passhash);
             User.newAndSave(loginname, loginname, passhash, email, avatarUrl, false, function (err) {
                 if (err) {
                     return next(err);
@@ -69,7 +67,6 @@ exports.signup = function (req, res, next) {
                 var message = {
                     success: '欢迎加入 ' + config.name + '！我们已给您的注册邮箱发送了一封邮件，请点击里面的链接来激活您的帐号。'
                 };
-                console.log(message);
                 // 发送激活邮件
                 // mail.sendActiveMail(email, utility.md5(email + passhash + config.session_secret), loginname);
                 res.send(message);
@@ -88,7 +85,6 @@ exports.signup = function (req, res, next) {
  */
 exports.showLogin = function (req, res) {
     req.session._loginReferer = req.headers.referer;
-    console.log(req.session.user);
     res.render('admin/signin');
 };
 
@@ -114,8 +110,6 @@ exports.login = function (req, res, next) {
     var loginname = validator.trim(req.body.email).toLowerCase();
     var pass      = validator.trim(req.body.password);
     var ep        = new eventproxy();
-    console.log("loginname==============="+loginname)
-    console.log("pass==============="+pass)
 
     ep.fail(next);
 
@@ -132,8 +126,11 @@ exports.login = function (req, res, next) {
     }
 
     ep.on('login_error', function (msg) {
-        res.status(403);
-        res.render('sign/signin', { error: msg });
+        console.log("msg=================================="+msg)
+        var message = {
+            error:"用户名或密码错误"
+        };
+        res.send(message);
     });
     getUser(loginname, function (err, user) {
         if (err) {
@@ -145,19 +142,16 @@ exports.login = function (req, res, next) {
         }
         var passhash = user.pass;
         tools.bcompare(pass, passhash,ep.done(function (bool) {
-            console.log("bool==================="+bool)
             if (!bool) {
                 return ep.emit('login_error','用户名或密码错误');
             }
             var message = {
-                success:"登陆成功1",
+                success:"登陆成功",
                 user:user
             };
             //session
   //          authMiddleWare.gen_session(user,res);
-            console.log(req.session);
             req.session.user = user;
-            console.log(message)
             res.send(message);
         }));
 
